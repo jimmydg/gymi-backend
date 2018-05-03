@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 
 @RestController
@@ -19,6 +20,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public User createUser(@Valid @RequestBody User user) {
+        Long currentUserId = user.getId();
+        user.setId(currentUserId++);
+        user.setCreatedDate(new Date());
+        user.setUpdatedDate(new Date());
         return userRepository.save(user);
     }
 

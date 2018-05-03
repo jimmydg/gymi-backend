@@ -32,6 +32,11 @@ public class User implements Serializable {
     @Column
     private String lastName;
 
+    @NotBlank
+    @Column
+    private String password;
+
+
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.DATE)
     @CreatedDate
@@ -88,5 +93,13 @@ public class User implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
