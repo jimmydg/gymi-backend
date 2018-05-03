@@ -4,6 +4,7 @@ import com.gymi.model.User;
 import com.gymi.repository.UserRepository;
 import com.gymi.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,16 @@ public class AuthenticationController {
     UserRepository userRepository;
 
     @PostMapping("/register")
-    public User createUser(@Valid @RequestBody User user) {
-        Long currentUserId = user.getId();
-        user.setId(currentUserId++);
+    public HttpStatus createUser(@Valid @RequestBody User user) {
         user.setCreatedDate(new Date());
         user.setUpdatedDate(new Date());
-        return userRepository.save(user);
+
+        try {
+            userRepository.save(user);
+            return HttpStatus.OK;
+        } catch (Exception e) {
+            return HttpStatus.UNAUTHORIZED;
+        }
     }
 
     @PostMapping("/login")
