@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
@@ -23,6 +24,11 @@ public class User implements Serializable {
 
     @NotBlank
     @Column
+    private String username;
+
+    @NotBlank
+    @Column
+    @Email
     private String email;
 
     @NotBlank
@@ -36,6 +42,10 @@ public class User implements Serializable {
     @NotBlank
     @Column
     private String password;
+
+    @Column
+    @Basic()
+    private Date dateOfBirth;
 
 
     @Column(nullable = false, updatable = false)
@@ -102,5 +112,21 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
