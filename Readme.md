@@ -4,11 +4,12 @@ TODO: description
 
 ## Requirements
 
-1. Java - 1.8.x
+1. Java - 1.8+
 
-2. Maven - 3.x.x
+2. Maven - 3+
 
-3. Mysql - 5.x.x
+3. Mysql - 5+
+
 
 ## Initial setup
 
