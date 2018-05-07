@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -55,9 +57,30 @@ public class AuthService {
         }
     }
 
+    public ResponseEntity isAuthenticated(String authToken) {
+        Token token = tokenRepository.findByToken(authToken);
+        if(token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        byte[] decryptToken = Base64.getDecoder().decode(token.getToken());
+        String decryptTokenStr = null;
+        try {
+            decryptTokenStr = new String(decryptToken, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String[] information = decryptTokenStr.split("\\.");
+        Optional<User> user = userRepository.findById(Long.valueOf(information[0]));
+        if(user.get() != null) {
+            return null;
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
     private void saveTokenToDatabase(Token token) {
         tokenRepository.save(token);
     }
-
-
 }
