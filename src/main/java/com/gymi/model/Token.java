@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity
 @Table(name = "token")
 @EntityListeners(AuditingEntityListener.class)
-public class Token implements Serializable{
+public class    Token implements Serializable{
 
     @Id
     @Column
