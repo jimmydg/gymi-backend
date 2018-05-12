@@ -22,13 +22,18 @@ public class UserService {
     @Autowired
     AuthService authService;
 
-    public ResponseEntity getUserById(long userId) {
+    public User getUserById(long userId) {
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
-            return new ResponseEntity(user.get(), HttpStatus.OK);
+            return user.get();
         }
         else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return null;
         }
+    }
+
+    public User getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        return user;
     }
 }
