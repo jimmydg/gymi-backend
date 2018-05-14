@@ -16,11 +16,11 @@ public class Activity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "userId")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "equipmentId")
     private Equipment equipment;
 
     @NotBlank
@@ -31,7 +31,7 @@ public class Activity {
     private Long amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "unitId")
     private ActivityUnit unit;
 
     @Transient
