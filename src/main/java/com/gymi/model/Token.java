@@ -16,7 +16,7 @@ public class    Token implements Serializable{
     private String token;
 
     @Column
-    private Date validTill;
+    private Date validFrom;
 
     public String getToken() {
         return token;
@@ -26,11 +26,12 @@ public class    Token implements Serializable{
         this.token = token;
     }
 
-    public Date getValidTill() {
-        return validTill;
+    public Date getValidFrom() {
+        return validFrom;
     }
 
-    public void setValidTill(Date validTill) {
-        this.validTill = validTill;
+    public void setValidFrom(Date validTill) {
+        this.validFrom = validTill;
     }
 }
+

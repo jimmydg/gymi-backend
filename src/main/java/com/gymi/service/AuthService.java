@@ -14,7 +14,6 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -64,7 +63,7 @@ public class AuthService {
 
         Token tokenObject = new Token();
         tokenObject.setToken(token);
-        tokenObject.setValidTill(timestamp);
+        tokenObject.setValidFrom(timestamp);
         saveTokenToDatabase(tokenObject);
         return token;
     }
@@ -84,10 +83,14 @@ public class AuthService {
         }
         String[] information = decryptTokenStr.split("\\.");
         Optional<User> user = userRepository.findById(Long.valueOf(information[0]));
-        if(user.get() != null && isTokenValid(information[2])) {
-           return null;
+        try {
+            if (user.get() != null && isTokenValid(information[2])) {
+                return null;
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
         }
-        else {
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }

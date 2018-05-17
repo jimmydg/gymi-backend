@@ -15,8 +15,6 @@ import java.util.Date;
 @Entity
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = {"createdDate", "updatedDate"},
-        allowGetters = true)
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +37,7 @@ public class User implements Serializable {
     @Column
     private String lastName;
 
+    @JsonIgnore
     @NotBlank
     @Column
     private String password;
@@ -47,12 +46,12 @@ public class User implements Serializable {
     @Basic()
     private Date dateOfBirth;
 
-
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.DATE)
     @CreatedDate
     private Date createdDate;
 
+    @JsonIgnore
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     @LastModifiedDate

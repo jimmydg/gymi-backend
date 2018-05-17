@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity getUserById(@RequestHeader("Authorization") String authToken, @PathVariable("id") long id) {
         if (authService.isAuthenticated(authToken) != null) return authService.isAuthenticated(authToken);
         else {
@@ -34,7 +34,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/{username}")
+    @GetMapping("/username/{username}")
     public ResponseEntity getUserByUsername(@RequestHeader("Authorization") String authToken, @PathVariable("username") String username) {
         if (authService.isAuthenticated(authToken) != null) return authService.isAuthenticated(authToken);
         else {
