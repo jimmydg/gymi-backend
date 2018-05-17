@@ -99,7 +99,7 @@ public class AuthService {
         tokenRepository.save(token);
     }
 
-    private boolean isTokenValid(String timeCreated) {
+    public boolean isTokenValid(String timeCreated) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date tokenDate;
         Date todayDate;
