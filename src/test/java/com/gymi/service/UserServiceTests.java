@@ -27,6 +27,7 @@ public class UserServiceTests {
     private UserService userService;
 
     User userMock;
+
     @Before
     public void initialize() {
         User userMock = new User();
@@ -49,7 +50,6 @@ public class UserServiceTests {
         given(this.userRepository.findById(number)).willReturn(Optional.ofNullable(userMock));
         assertThat(this.userService.getUserById((number))).isEqualTo(userMock);
 
-
     }
 
     @Test
@@ -60,5 +60,21 @@ public class UserServiceTests {
         given(this.userRepository.findById(number)).willReturn(empty);
 
         assertThat(this.userService.getUserById(number)).isEqualTo(null);
+    }
+
+    @Test
+    public void testGetUserByUsername() {
+        String username = "testuser";
+
+        given(this.userRepository.findByUsername(username)).willReturn(userMock);
+        assertThat(this.userService.getUserByUsername(username)).isEqualTo(userMock);
+    }
+
+    @Test
+    public void testGetUserByUsernameWhenNotExist() {
+        String username = "testuser";
+
+        given(this.userRepository.findByUsername(username)).willReturn(null);
+        assertThat(this.userService.getUserByUsername(username)).isEqualTo(null);
     }
 }
