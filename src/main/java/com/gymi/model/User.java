@@ -2,6 +2,7 @@ package com.gymi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -37,7 +38,6 @@ public class User implements Serializable {
     @Column
     private String lastName;
 
-    @JsonIgnore
     @NotBlank
     @Column
     private String password;
@@ -105,10 +105,12 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }

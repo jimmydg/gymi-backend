@@ -44,27 +44,23 @@ public class AuthService {
     }
 
     public ResponseEntity login(LoginForm loginForm) {
-        try {
-            User user = userRepository.findByUsernameAndPassword(loginForm.getUsername(), loginForm.getPassword());
-            String token = generateToken(user);
-            return new ResponseEntity<String>(token, HttpStatus.OK);
-        }
-        catch (Exception e) {
+            Optional<User> user = userRepository.findByUsernameAndPassword(loginForm.getUsername(), loginForm.getPassword());
+            if(user.isPresent()) {
+                String token = generateToken(user.get(), new Timestamp(System.currentTimeMillis()), new Random().nextLong());
+                return new ResponseEntity<String>(token, HttpStatus.OK);
+            }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
     }
 
-    private String generateToken(User user) {
-        Random random = new Random();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    public String generateToken(User user, Timestamp timestamp, long random) {
         StringBuilder builder = new StringBuilder();
-        builder.append(user.getId()).append(".").append(random.nextLong()).append(".").append(timestamp);
+        builder.append(user.getId()).append(".").append(random).append(".").append(timestamp);
         String token = Base64.getEncoder().encodeToString(builder.toString().getBytes());
 
         Token tokenObject = new Token();
         tokenObject.setToken(token);
         tokenObject.setValidFrom(timestamp);
-        saveTokenToDatabase(tokenObject);
+        tokenRepository.save(tokenObject);
         return token;
     }
 
@@ -95,11 +91,7 @@ public class AuthService {
         }
     }
 
-    private void saveTokenToDatabase(Token token) {
-        tokenRepository.save(token);
-    }
-
-    private boolean isTokenValid(String timeCreated) {
+    public boolean isTokenValid(String timeCreated) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date tokenDate;
         Date todayDate;
@@ -114,11 +106,11 @@ public class AuthService {
         return difference < MILLIS_PER_DAY;
     }
 
-    private boolean isUsernameUnique(String username) {
+    public boolean isUsernameUnique(String username) {
         return userRepository.findByUsername(username) == null;
     }
 
-    private boolean isEmailUnique(String email) {
+    public boolean isEmailUnique(String email) {
         return userRepository.findByEmail(email) == null;
     }
 }
