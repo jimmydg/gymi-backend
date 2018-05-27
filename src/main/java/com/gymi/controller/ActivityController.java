@@ -1,5 +1,6 @@
 package com.gymi.controller;
 
+import com.gymi.model.Activity;
 import com.gymi.model.ActivityType;
 import com.gymi.model.Session;
 import com.gymi.service.ActivityService;
@@ -18,7 +19,7 @@ import java.util.Set;
 @RequestMapping("/activity")
 public class ActivityController {
 
-    @Autowired 
+    @Autowired
     UserService userService;
 
     @Autowired
@@ -37,7 +38,7 @@ public class ActivityController {
     @ResponseBody
     public ResponseEntity findAllSessionsForUser(@RequestHeader("Authorization") String authToken) {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        Set<Session> sessions =  activityService.findAllSessionsForUser(authService.isAuthenticated(authToken));
+        Set<Session> sessions = activityService.findAllSessionsForUser(authService.isAuthenticated(authToken));
         return new ResponseEntity(sessions, HttpStatus.OK);
     }
 
@@ -54,13 +55,21 @@ public class ActivityController {
     public ResponseEntity deleteSession(@RequestHeader("Authorization") String authToken, @PathVariable("id") long id) {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         Optional<Session> session = activityService.findSessionById(id);
-        if(session.isPresent()) {
-            if(session.get().getUser().getId() != authService.isAuthenticated(authToken).getId()) return new ResponseEntity("Session is not owned by user.",HttpStatus.UNAUTHORIZED);
+        if (session.isPresent()) {
+            if (session.get().getUser().getId() != authService.isAuthenticated(authToken).getId())
+                return new ResponseEntity("Session is not owned by user.", HttpStatus.UNAUTHORIZED);
             activityService.deleteSession(session.get());
             return new ResponseEntity(HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity("Session does not exist", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/")
+    @ResponseBody
+    public ResponseEntity saveActivities(@RequestHeader("Authorization") String authToken, @RequestBody List<Activity> activities) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        activities.forEach(activity -> activityService.saveActivity(activity));
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

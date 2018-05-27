@@ -1,5 +1,6 @@
 package com.gymi.service;
 
+import com.gymi.model.Activity;
 import com.gymi.model.ActivityType;
 import com.gymi.model.Session;
 import com.gymi.model.User;
@@ -48,5 +49,11 @@ public class ActivityService {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         session.setDateTime(currentTime);
         return sessionRepository.save(session);
+    }
+
+    public void saveActivity(Activity activity) {
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        activity.setDateTime(currentTime);
+        activityRepository.save(activity);
     }
 }

@@ -23,7 +23,6 @@ public class Activity  implements Serializable {
     @JoinColumn(name = "equipmentId")
     private ActivityType activityType;
 
-    @NotBlank
     @Column
     private Timestamp dateTime;
 
