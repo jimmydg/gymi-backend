@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -38,5 +39,28 @@ public class ActivityController {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         Set<Session> sessions =  activityService.findAllSessionsForUser(authService.isAuthenticated(authToken));
         return new ResponseEntity(sessions, HttpStatus.OK);
+    }
+
+    @PostMapping("/session")
+    @ResponseBody
+    public ResponseEntity createSession(@RequestHeader("Authorization") String authToken) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        Session session = activityService.createEmptySessionForUser(authService.isAuthenticated(authToken));
+        return new ResponseEntity(session, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/session/{id}")
+    @ResponseBody
+    public ResponseEntity deleteSession(@RequestHeader("Authorization") String authToken, @PathVariable("id") long id) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        Optional<Session> session = activityService.findSessionById(id);
+        if(session.isPresent()) {
+            if(session.get().getUser().getId() != authService.isAuthenticated(authToken).getId()) return new ResponseEntity("Session is not owned by user.",HttpStatus.UNAUTHORIZED);
+            activityService.deleteSession(session.get());
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity("Session does not exist", HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -20,7 +20,6 @@ public class Session {
     @JoinColumn(name = "userId")
     private User user;
 
-    @NotBlank
     @Column
     private Timestamp dateTime;
 
