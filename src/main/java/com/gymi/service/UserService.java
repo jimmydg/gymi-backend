@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,7 +39,7 @@ public class UserService {
         return user;
     }
 
-    public ResponseEntity<Object> saveFriend(long id1, long id2)
+    public Friend saveFriend(long id1, long id2)
     {
         Friend friend = new Friend();
 
@@ -48,13 +49,15 @@ public class UserService {
             friend.setUserId2(id2);
             friend.setHasAccepted(false);
             try {
-                friendRepository.save(friend);
-                return ResponseEntity.status(HttpStatus.OK).build();
+                return friendRepository.save(friend);
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return null;
             }
         }
-
         return null;
+    }
+
+    public List<Friend> getFriendsForUser(long userId) {
+        return friendRepository.findFriendsforUser(userId);
     }
 }

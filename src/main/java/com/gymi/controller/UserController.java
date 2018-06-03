@@ -34,7 +34,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/username/{username}")
+    @GetMapping("/{username}")
     public ResponseEntity getUserByUsername(@RequestHeader("Authorization") String authToken, @PathVariable("username") String username) {
         if (authService.isAuthenticated(authToken) != null) return authService.isAuthenticated(authToken);
         else {
@@ -45,4 +45,15 @@ public class UserController {
             else return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
+
+//    @GetMapping("/{username}/friends")
+//    public ResponseEntity getFriendsForUser(@RequestHeader("Authorization") String authToken, @PathVariable("username") String username) {
+//        if (authService.isAuthenticated(authToken) != null) return authService.isAuthenticated(authToken);
+//        else {
+//            User user = userService.getUserByUsername(username);
+//            if(user != null) {
+//                return new ResponseEntity(user, HttpStatus.OK);
+//            }
+//            else return new ResponseEntity(HttpStatus.NOT_FOUND);
+//        }
 }
