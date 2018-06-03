@@ -6,11 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_unit")
 @EntityListeners(AuditingEntityListener.class)
-public class ActivityUnit {
+public class ActivityUnit  implements Serializable {
 
     @Id
     private long id;

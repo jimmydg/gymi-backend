@@ -64,10 +64,10 @@ public class AuthService {
         return token;
     }
 
-    public ResponseEntity isAuthenticated(String authToken) {
+    public User isAuthenticated(String authToken) {
         Token token = tokenRepository.findByToken(authToken);
         if(token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return null;
         }
         byte[] decryptToken = Base64.getDecoder().decode(token.getToken());
         String decryptTokenStr = null;
@@ -75,19 +75,19 @@ public class AuthService {
             decryptTokenStr = new String(decryptToken, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return null;
         }
         String[] information = decryptTokenStr.split("\\.");
         Optional<User> user = userRepository.findById(Long.valueOf(information[0]));
         try {
             if (user.get() != null && isTokenValid(information[2])) {
-                return null;
+                return user.get();
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return null;
             }
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return null;
         }
     }
 
