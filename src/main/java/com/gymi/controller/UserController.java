@@ -1,5 +1,7 @@
 package com.gymi.controller;
 
+import com.gymi.model.Friend;
+import com.gymi.model.FriendResponse;
 import com.gymi.model.User;
 import com.gymi.service.AuthService;
 import com.gymi.service.UserService;
@@ -7,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -28,7 +33,7 @@ public class UserController {
         else {
             User user = userService.getUserById(id);
             if(user != null) {
-                return new ResponseEntity(user, HttpStatus.OK);
+                return new ResponseEntity<>(user, HttpStatus.OK);
             }
             else return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
@@ -40,20 +45,27 @@ public class UserController {
         else {
             User user = userService.getUserByUsername(username);
             if(user != null) {
-                return new ResponseEntity(user, HttpStatus.OK);
+                return new ResponseEntity<>(user, HttpStatus.OK);
             }
             else return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
-//    @GetMapping("/{username}/friends")
-//    public ResponseEntity getFriendsForUser(@RequestHeader("Authorization") String authToken, @PathVariable("username") String username) {
-//        if (authService.isAuthenticated(authToken) != null) return authService.isAuthenticated(authToken);
-//        else {
-//            User user = userService.getUserByUsername(username);
-//            if(user != null) {
-//                return new ResponseEntity(user, HttpStatus.OK);
-//            }
-//            else return new ResponseEntity(HttpStatus.NOT_FOUND);
-//        }
+    @GetMapping("/current")
+    public ResponseEntity getCurrentUser(@RequestHeader("Authorization") String authToken) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        else return new ResponseEntity<>(authService.isAuthenticated(authToken), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/friends")
+    public ResponseEntity getFriendsForUser(@RequestHeader("Authorization") String authToken, @PathVariable("id") long userId) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        else {
+            User user = userService.getUserById(userId);
+            if (user != null) {
+                List<FriendResponse> friendList = userService.getFriendsForUser(user.getId());
+                return new ResponseEntity<>(friendList, HttpStatus.OK);
+            } else return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
 }

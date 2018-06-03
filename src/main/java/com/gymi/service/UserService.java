@@ -1,14 +1,17 @@
 package com.gymi.service;
 
 import com.gymi.model.Friend;
+import com.gymi.model.FriendResponse;
 import com.gymi.model.User;
 import com.gymi.repository.FriendRepository;
 import com.gymi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +60,23 @@ public class UserService {
         return null;
     }
 
-    public List<Friend> getFriendsForUser(long userId) {
-        return friendRepository.findFriendsforUser(userId);
+    public List<FriendResponse> getFriendsForUser(long userId) {
+        List<Friend> friendList = friendRepository.findByUserId1OrUserId2(userId, userId);
+        List<FriendResponse> friendResponseList = new ArrayList<>();
+
+        for(Friend friend: friendList) {
+            if(friend.getHasAccepted()) {
+                FriendResponse friendResponse = new FriendResponse();
+                if(friend.getUserId1() == userId) {
+                    friendResponse.setUser(getUserById(friend.getUserId2()));
+                }
+                else {
+                    friendResponse.setUser(getUserById(friend.getUserId1()));
+                }
+                friendResponse.setFriendsSince(friend.getCreatedDate());
+                friendResponseList.add(friendResponse);
+            }
+        }
+        return friendResponseList;
     }
 }
