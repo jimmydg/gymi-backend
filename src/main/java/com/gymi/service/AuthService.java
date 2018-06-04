@@ -53,10 +53,7 @@ public class AuthService {
     }
 
     public String generateToken(User user, Timestamp timestamp, long random) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(user.getId()).append(".").append(random).append(".").append(timestamp);
-        String token = Base64.getEncoder().encodeToString(builder.toString().getBytes());
-
+        String token = Base64.getEncoder().encodeToString((String.valueOf(user.getId()) + "." + random + "." + timestamp).getBytes());
         Token tokenObject = new Token();
         tokenObject.setToken(token);
         tokenObject.setValidFrom(timestamp);
@@ -80,7 +77,7 @@ public class AuthService {
         String[] information = decryptTokenStr.split("\\.");
         Optional<User> user = userRepository.findById(Long.valueOf(information[0]));
         try {
-            if (user.get() != null && isTokenValid(information[2])) {
+            if (user.isPresent() && isTokenValid(information[2])) {
                 return user.get();
             } else {
                 return null;
