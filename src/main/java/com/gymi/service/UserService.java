@@ -50,7 +50,7 @@ public class UserService {
         {
             friend.setUserId1(id1);
             friend.setUserId2(id2);
-            friend.setHasAccepted(false);
+            friend.setHasAccepted(true);
             try {
                 return friendRepository.save(friend);
             } catch (Exception e) {

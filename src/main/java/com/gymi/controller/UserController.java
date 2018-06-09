@@ -33,7 +33,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/username/{username}")
     public ResponseEntity getUserByUsername(@RequestHeader("Authorization") String authToken, @PathVariable("username") String username) {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         else {
@@ -61,5 +61,17 @@ public class UserController {
                 return new ResponseEntity<>(friendList, HttpStatus.OK);
             } else return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/sendFriendRequest")
+    @ResponseBody
+    public ResponseEntity sendFriendRequest(@RequestHeader("Authorization") String authToken, @RequestBody String username1, String username2) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        User user1 = userService.getUserByUsername(username1);
+        User user2 = userService.getUserByUsername(username2);
+        if (user1 != null && user2 != null) {
+            userService.saveFriend(user1.getId(), user2.getId());
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
