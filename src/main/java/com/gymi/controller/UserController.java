@@ -1,5 +1,6 @@
 package com.gymi.controller;
 
+import com.gymi.model.Friend;
 import com.gymi.model.FriendResponse;
 import com.gymi.model.User;
 import com.gymi.service.AuthService;
@@ -26,10 +27,9 @@ public class UserController {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         else {
             User user = userService.getUserById(id);
-            if(user != null) {
+            if (user != null) {
                 return new ResponseEntity<>(user, HttpStatus.OK);
-            }
-            else return new ResponseEntity(HttpStatus.NOT_FOUND);
+            } else return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -38,10 +38,9 @@ public class UserController {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         else {
             User user = userService.getUserByUsername(username);
-            if(user != null) {
+            if (user != null) {
                 return new ResponseEntity<>(user, HttpStatus.OK);
-            }
-            else return new ResponseEntity(HttpStatus.NOT_FOUND);
+            } else return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -63,15 +62,23 @@ public class UserController {
         }
     }
 
-    @PostMapping("/sendFriendRequest")
-    @ResponseBody
-    public ResponseEntity sendFriendRequest(@RequestHeader("Authorization") String authToken, @RequestBody String username1, String username2) {
+    @PostMapping("/sendFriendRequest/{userId1}/{userId2}")
+    public ResponseEntity sendFriendRequest(@RequestHeader("Authorization") String authToken,
+                                            @PathVariable("userId1") int userId1,
+                                            @PathVariable("userId2") int userId2)
+    {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        User user1 = userService.getUserByUsername(username1);
-        User user2 = userService.getUserByUsername(username2);
+
+        User user1 = userService.getUserById(userId1);
+        User user2 = userService.getUserById(userId2);
         if (user1 != null && user2 != null) {
-            userService.saveFriend(user1.getId(), user2.getId());
+            Friend friend = userService.saveFriend(user1.getId(), user2.getId());
+            if(friend == null) {
+                return new ResponseEntity(HttpStatus.CONFLICT);
+            }
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(HttpStatus.OK);
     }
 }

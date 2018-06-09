@@ -18,11 +18,9 @@ public class Friend implements Serializable {
     private long id;
 
     @Column
-    @NotBlank
     private long userId1;
 
     @Column
-    @NotBlank
     private long userId2;
 
     @Column(nullable = false, updatable = false)

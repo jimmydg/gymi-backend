@@ -46,18 +46,20 @@ public class UserService {
     {
         Friend friend = new Friend();
 
-        if (userRepository.findById(id2).isPresent())
-        {
+        if(friendRepository.findByUserId1AndUserId2(id1, id2) == null
+                && friendRepository.findByUserId1AndUserId2(id2, id1) == null) {
             friend.setUserId1(id1);
             friend.setUserId2(id2);
             friend.setHasAccepted(true);
+
             try {
                 return friendRepository.save(friend);
             } catch (Exception e) {
-                return null;
+                throw e;
             }
+        } else {
+            return null;
         }
-        return null;
     }
 
     public List<FriendResponse> getFriendsForUser(long userId) {
