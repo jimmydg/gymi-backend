@@ -63,6 +63,14 @@ public class ActivityController {
         }
     }
 
+    @GetMapping("/session/{id}")
+    @ResponseBody
+    public ResponseEntity<Session> getSession(@RequestHeader("Authorization") String authToken, @PathVariable("id") long id) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        Optional<Session> session = activityService.findSessionById(id);
+        return session.map(session1 -> new ResponseEntity<>(session1, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PostMapping("/")
     @ResponseBody
     public ResponseEntity saveActivities(@RequestHeader("Authorization") String authToken, @RequestBody List<Activity> activities) {
