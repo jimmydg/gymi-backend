@@ -5,6 +5,7 @@ import com.gymi.repository.ActivityRepository;
 import com.gymi.repository.ActivityTypeRepository;
 import com.gymi.repository.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -56,16 +57,32 @@ public class ActivityService {
         activityRepository.save(activity);
     }
 
-    public ResponseEntity generateTimelineItems(User user, long firstIndex, long lastIndex) {
+    public List<TimelineItem> generateTimelineItems(User user, long firstIndex, long lastIndex) {
         Set<Session> sessions = findFriendAndUserSessionsForUser(user);
         setIsHighscoresForActivity(sessions);
-        //TODO
-        return null;
+        List<TimelineItem> timelineItemList = new ArrayList<>();
+        for (Session session : sessions) {
+            if (!session.getActivities().isEmpty()) {
+                Activity imageActivity = session.getActivities().iterator().next();
+                String image = imageActivity.getActivityType().getImageName();
+                StringBuilder stringBuilder = new StringBuilder();
+                TimelineItem item = createTimeLineItem("Gym Session",
+                        user.getUsername() + " has done a new workout of " + session.getActivities().size() + " machines",
+                        user,
+                        image,
+                        session.getDateTime(),
+                        "session",
+                        session.getId());
+                timelineItemList.add(item);
+            }
+        }
+        timelineItemList.sort(TimelineItem::compareTo);
+        return timelineItemList;
     }
 
     private void setIsHighscoresForActivity(Set<Session> sessions) {
-        for(Session session: sessions) {
-            for(Activity activity: session.getActivities()) {
+        for (Session session : sessions) {
+            for (Activity activity : session.getActivities()) {
                 findHighestScoreForUserForActivity(session.getUser(), activity);
                 //TODO
             }
@@ -82,10 +99,22 @@ public class ActivityService {
         List<FriendResponse> friendList = userService.getFriendsForUser(user.getId());
 
         Collection<User> userCollection = new ArrayList<>();
-        for(FriendResponse friendResponse: friendList) {
+        for (FriendResponse friendResponse : friendList) {
             userCollection.add(friendResponse.getUser());
         }
         userCollection.add(user);
         return sessionRepository.findAllByUserIsInOrderByDateTime(userCollection);
+    }
+
+    private TimelineItem createTimeLineItem(String title, String message, User user, String image, Date date, String type, Long sessionId) {
+        TimelineItem timelineItem = new TimelineItem();
+        timelineItem.setDate(date);
+        timelineItem.setImage(image);
+        timelineItem.setMessage(message);
+        timelineItem.setTitle(title);
+        timelineItem.setUser(user);
+        timelineItem.setType(type);
+        timelineItem.setSessionId(sessionId);
+        return timelineItem;
     }
 }

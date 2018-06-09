@@ -1,6 +1,5 @@
 package com.gymi.controller;
 
-import com.gymi.model.Friend;
 import com.gymi.model.FriendResponse;
 import com.gymi.model.User;
 import com.gymi.service.AuthService;
@@ -10,16 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
-    UserController() {
-
-    }
 
     @Autowired
     AuthService authService;

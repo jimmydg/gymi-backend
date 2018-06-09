@@ -1,6 +1,8 @@
 package com.gymi.model;
 
-public class TimelineItem {
+import java.util.Date;
+
+public class TimelineItem implements Comparable<TimelineItem> {
 
     String title;
 
@@ -8,10 +10,21 @@ public class TimelineItem {
 
     String image;
 
-    String date;
+    Date date;
 
     User user;
 
+    String type;
+
+    Long sessionId = (long) 0;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getTitle() {
         return title;
@@ -37,11 +50,11 @@ public class TimelineItem {
         this.image = image;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -51,5 +64,21 @@ public class TimelineItem {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    @Override
+    public int compareTo(TimelineItem o) {
+        Date compareDate = ((TimelineItem) o).getDate();
+
+        //ascending order
+        return (int) compareDate.getTime() - (int) this.date.getTime();
     }
 }
