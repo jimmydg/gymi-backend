@@ -59,8 +59,8 @@ public class ActivityService {
 
     public List<TimelineItem> generateTimelineItems(User user, long firstIndex, long lastIndex) {
         Set<Session> sessions = findFriendAndUserSessionsForUser(user);
-        setIsHighscoresForActivity(sessions);
         List<TimelineItem> timelineItemList = new ArrayList<>();
+        List<TimelineItem> resultList = new ArrayList<>();
         for (Session session : sessions) {
             if (!session.getActivities().isEmpty()) {
                 Activity imageActivity = session.getActivities().iterator().next();
@@ -77,23 +77,14 @@ public class ActivityService {
             }
         }
         timelineItemList.sort(TimelineItem::compareTo);
-        return timelineItemList;
-    }
-
-    private void setIsHighscoresForActivity(Set<Session> sessions) {
-        for (Session session : sessions) {
-            for (Activity activity : session.getActivities()) {
-                findHighestScoreForUserForActivity(session.getUser(), activity);
-                //TODO
+        for(int i = 0; i < timelineItemList.size(); i++) {
+            if(i >= firstIndex && i < lastIndex) {
+                resultList.add(timelineItemList.get(i));
             }
         }
+        return resultList;
     }
 
-    private long findHighestScoreForUserForActivity(User user, Activity activity) {
-        Set<Session> userSessions = findAllSessionsForUser(user);
-        //TODO
-        return 0;
-    }
 
     private Set<Session> findFriendAndUserSessionsForUser(User user) {
         List<FriendResponse> friendList = userService.getFriendsForUser(user.getId());
