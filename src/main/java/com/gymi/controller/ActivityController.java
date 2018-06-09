@@ -88,6 +88,5 @@ public class ActivityController {
 
         List<TimelineItem> timelineItemList = activityService.generateTimelineItems(user, firstIndex, lastIndex);
         return new ResponseEntity<>(timelineItemList, HttpStatus.OK);
-
     }
 }

@@ -59,8 +59,20 @@ public class ActivityService {
 
     public List<TimelineItem> generateTimelineItems(User user, long firstIndex, long lastIndex) {
         Set<Session> sessions = findFriendAndUserSessionsForUser(user);
-        List<TimelineItem> timelineItemList = new ArrayList<>();
         List<TimelineItem> resultList = new ArrayList<>();
+        List<TimelineItem> timelineItemList = new ArrayList<>(generateSessionTimelineItems(user, sessions));
+
+        timelineItemList.sort(TimelineItem::compareTo);
+        for (int i = 0; i < timelineItemList.size(); i++) {
+            if (i >= firstIndex && i < lastIndex) {
+                resultList.add(timelineItemList.get(i));
+            }
+        }
+        return resultList;
+    }
+
+    private List<TimelineItem> generateSessionTimelineItems(User user, Set<Session> sessions) {
+        List<TimelineItem> timelineItemList = new ArrayList<>();
         for (Session session : sessions) {
             if (!session.getActivities().isEmpty()) {
                 Activity imageActivity = session.getActivities().iterator().next();
@@ -76,15 +88,8 @@ public class ActivityService {
                 timelineItemList.add(item);
             }
         }
-        timelineItemList.sort(TimelineItem::compareTo);
-        for(int i = 0; i < timelineItemList.size(); i++) {
-            if(i >= firstIndex && i < lastIndex) {
-                resultList.add(timelineItemList.get(i));
-            }
-        }
-        return resultList;
+        return timelineItemList;
     }
-
 
     private Set<Session> findFriendAndUserSessionsForUser(User user) {
         List<FriendResponse> friendList = userService.getFriendsForUser(user.getId());
