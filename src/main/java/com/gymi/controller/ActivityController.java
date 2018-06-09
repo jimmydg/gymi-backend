@@ -89,4 +89,13 @@ public class ActivityController {
         List<TimelineItem> timelineItemList = activityService.generateTimelineItems(user, firstIndex, lastIndex);
         return new ResponseEntity<>(timelineItemList, HttpStatus.OK);
     }
+
+    @GetMapping("/progress/{activityId}/{timespan}")
+    public ResponseEntity getProgressForUserForActivity(@RequestHeader("Authorization") String authToken,
+                                                        @PathVariable("activityId") long activityId,
+                                                        @PathVariable("timespan") String timespan) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        this.activityService.getProgress(authService.isAuthenticated(authToken), activityId, timespan);
+    }
 }

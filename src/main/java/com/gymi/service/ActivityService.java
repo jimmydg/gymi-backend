@@ -113,4 +113,11 @@ public class ActivityService {
         timelineItem.setSessionId(sessionId);
         return timelineItem;
     }
+
+    public void getProgress(User authenticated, long activityId, String timespan) {
+        Date date = new Date();
+        switch(timespan) {
+            case
+        }
+    }
 }

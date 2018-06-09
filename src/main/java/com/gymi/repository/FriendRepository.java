@@ -11,4 +11,5 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     List<Friend> findByUserId1OrUserId2(@NotBlank long userId1, @NotBlank long userId2);
 
+
 }
