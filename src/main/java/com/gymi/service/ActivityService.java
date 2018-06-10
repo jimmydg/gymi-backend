@@ -80,9 +80,9 @@ public class ActivityService {
                 Activity imageActivity = session.getActivities().iterator().next();
                 String image = imageActivity.getActivityType().getImageName();
                 StringBuilder stringBuilder = new StringBuilder();
-                TimelineItem item = createTimeLineItem("Gym Session",
-                        user.getUsername() + " has done a new workout of " + session.getActivities().size() + " machines",
-                        user,
+                TimelineItem item = createTimeLineItem(session.getUser().getUsername(),
+                        session.getUser().getFirstName() + " " + session.getUser().getLastName() + " has done a new workout of " + session.getActivities().size() + " machines",
+                        session.getUser(),
                         image,
                         session.getDateTime(),
                         "session",
