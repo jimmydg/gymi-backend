@@ -6,7 +6,7 @@
     <groupId>com.gymi</groupId>
     <artifactId>gymi</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>gymi</name>
     <description>Gymi jwz</description>
@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <start-class>com.gymi.runApplication</start-class>
     </properties>
 
     <dependencies>
@@ -32,6 +33,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provider</scope>
         </dependency>
 
         <dependency>
