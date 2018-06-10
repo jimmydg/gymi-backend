@@ -12,7 +12,7 @@ import java.util.Set;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
-    Set<Session> findByUserId(long userId);
+    Set<Session> findByUserIdOrderByDateTimeDesc(long userId);
 
     Set<Session> findAllByUserIsInOrderByDateTime(Collection<User> user);
 }
