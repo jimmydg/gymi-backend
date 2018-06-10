@@ -95,7 +95,9 @@ public class ActivityController {
                                                         @PathVariable("activityId") long activityId,
                                                         @PathVariable("timespan") String timespan) {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        List<Activity> activityList = this.activityService.getProgress(authService.isAuthenticated(authToken), activityId, timespan);
+        User user;
+        user = authService.isAuthenticated(authToken);
+        List<Activity> activityList = this.activityService.getProgress(user, activityId, timespan);
         if (activityList != null) {
             return new ResponseEntity<>(activityList, HttpStatus.OK);
         }

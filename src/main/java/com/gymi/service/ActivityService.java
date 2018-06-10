@@ -118,9 +118,7 @@ public class ActivityService {
 
     public List<Activity> getProgress(User user, long activityTypeId, String timespan) {
         Date currentDate = new Date();
-        Date fromDate = new Date();
         Calendar cal = determineFromTimeForProgression(timespan, currentDate);
-        fromDate.setTime(cal.getTimeInMillis());
 
         Set<Session> sessions = findAllSessionsForUser(user);
         ActivityType activityType = findActivityTypeById(activityTypeId).get();
@@ -129,16 +127,16 @@ public class ActivityService {
             collection.add(session.getId());
         }
 
-        Timestamp timestamp = new Timestamp(fromDate.getTime());
-        return activityRepository.findAllBySessionIdInAndActivityTypeIsAndDateTimeAfterOrderByDateTimeDesc(collection, activityType, timestamp);
+        Timestamp timestamp = new Timestamp(cal.getTime().getTime());
+        return activityRepository.findAllBySessionIdInAndActivityTypeIsAndDateTimeAfterOrderByDateTimeAsc(collection, activityType, timestamp);
     }
 
     private Calendar determineFromTimeForProgression(String timespan, Date currentDate) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(currentDate);
+        cal.setTimeInMillis(currentDate.getTime());
         switch(timespan) {
             case "lastWeek": {
-                cal.add(Calendar.DAY_OF_YEAR, -14);
+                cal.add(Calendar.DAY_OF_YEAR, -7);
             }
             case "lastMonth": {
                 cal.add(Calendar.MONTH, -1);
