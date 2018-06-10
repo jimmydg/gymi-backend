@@ -35,9 +35,6 @@ public class Activity  implements Serializable {
     @Transient
     private String message;
 
-    @Transient
-    private boolean isHighscore;
-
     public Long getId() {
         return id;
     }
@@ -62,21 +59,12 @@ public class Activity  implements Serializable {
         this.amount = amount;
     }
 
-
     public String getMessage() {
         return message;
     }
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public boolean isHighscore() {
-        return isHighscore;
-    }
-
-    public void setHighscore(boolean highscore) {
-        isHighscore = highscore;
     }
 
     public long getSessionTimes() {
