@@ -2,6 +2,7 @@ package com.gymi.controller;
 
 import com.gymi.model.Friend;
 import com.gymi.model.FriendResponse;
+import com.gymi.model.Session;
 import com.gymi.model.User;
 import com.gymi.service.AuthService;
 import com.gymi.service.UserService;
@@ -65,20 +66,36 @@ public class UserController {
     @PostMapping("/sendFriendRequest/{userId1}/{userId2}")
     public ResponseEntity sendFriendRequest(@RequestHeader("Authorization") String authToken,
                                             @PathVariable("userId1") int userId1,
-                                            @PathVariable("userId2") int userId2)
-    {
+                                            @PathVariable("userId2") int userId2) {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
 
         User user1 = userService.getUserById(userId1);
         User user2 = userService.getUserById(userId2);
         if (user1 != null && user2 != null) {
             Friend friend = userService.saveFriend(user1.getId(), user2.getId());
-            if(friend == null) {
+            if (friend == null) {
                 return new ResponseEntity(HttpStatus.CONFLICT);
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(friend, HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @DeleteMapping("/deleteFriendship/{userId2}")
+    public ResponseEntity deleteFriendship(@RequestHeader("Authorization") String authToken,
+                                           @PathVariable("userId2") int userId2
+    ) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+
+        Long userId1 = authService.isAuthenticated(authToken).getId();
+
+        try {
+            userService.deleteFriendship(userId1, (long) userId2);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
     }
 }

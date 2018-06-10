@@ -1,8 +1,6 @@
 package com.gymi.service;
 
-import com.gymi.model.Friend;
-import com.gymi.model.FriendResponse;
-import com.gymi.model.User;
+import com.gymi.model.*;
 import com.gymi.repository.FriendRepository;
 import com.gymi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -60,6 +59,14 @@ public class UserService {
         } else {
             return null;
         }
+    }
+
+    public void deleteFriendship(Long id1, Long id2)
+    {
+        Friend friendShip = friendRepository.findFriendshipByUserIds(id1, id2);
+
+        friendRepository.delete(friendShip);
+
     }
 
     public List<FriendResponse> getFriendsForUser(long userId) {
