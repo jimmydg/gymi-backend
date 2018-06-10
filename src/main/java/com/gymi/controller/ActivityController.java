@@ -81,12 +81,26 @@ public class ActivityController {
 
     @GetMapping("/timeline/{firstIndex}/{lastIndex}")
     public ResponseEntity<List<TimelineItem>> getTimelineItems(@RequestHeader("Authorization") String authToken,
-                                           @PathVariable("firstIndex") long firstIndex,
-                                           @PathVariable("lastIndex") long lastIndex) {
+                                                               @PathVariable("firstIndex") long firstIndex,
+                                                               @PathVariable("lastIndex") long lastIndex) {
         if (authService.isAuthenticated(authToken) == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         User user = authService.isAuthenticated(authToken);
 
         List<TimelineItem> timelineItemList = activityService.generateTimelineItems(user, firstIndex, lastIndex);
         return new ResponseEntity<>(timelineItemList, HttpStatus.OK);
+    }
+
+    @GetMapping("/progress/{activityId}/{timespan}")
+    public ResponseEntity getProgressForUserForActivity(@RequestHeader("Authorization") String authToken,
+                                                        @PathVariable("activityId") long activityId,
+                                                        @PathVariable("timespan") String timespan) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        User user;
+        user = authService.isAuthenticated(authToken);
+        List<Activity> activityList = this.activityService.getProgress(user, activityId, timespan);
+        if (activityList != null) {
+            return new ResponseEntity<>(activityList, HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 }
