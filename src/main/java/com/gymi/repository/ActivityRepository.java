@@ -18,5 +18,5 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
     List<Activity> findAllBySessionIdInAndActivityTypeIsAndDateTimeAfterOrderByDateTimeAsc(Collection<Long> sessionId,
                                                                                             ActivityType activityType,
                                                                                             Timestamp dateTime);
-
+    List<Activity> findBySessionIdInAndActivityTypeIsOrderByAmountDesc(Collection<Long> sessionId, ActivityType activityType);
 }

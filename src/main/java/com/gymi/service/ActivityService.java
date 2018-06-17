@@ -123,7 +123,7 @@ public class ActivityService {
         Set<Session> sessions = findAllSessionsForUser(user);
         ActivityType activityType = findActivityTypeById(activityTypeId).get();
         Collection<Long> collection = new HashSet<Long>();
-        for(Session session: sessions) {
+        for (Session session : sessions) {
             collection.add(session.getId());
         }
 
@@ -134,7 +134,7 @@ public class ActivityService {
     private Calendar determineFromTimeForProgression(String timespan, Date currentDate) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(currentDate.getTime());
-        switch(timespan) {
+        switch (timespan) {
             case "lastWeek": {
                 cal.add(Calendar.DAY_OF_YEAR, -7);
             }
@@ -150,4 +150,38 @@ public class ActivityService {
         }
         return cal;
     }
+
+    public List<LeaderboardResponse> getLeaderboard(User user, ActivityType activityType) {
+        List<LeaderboardResponse> leaderboardResponseList = new ArrayList<>();
+        List<FriendResponse> friendList = userService.getFriendsForUser(user.getId());
+        for (FriendResponse friendResponse : friendList) {
+            Set<Session> sessions = findAllSessionsForUser(friendResponse.getUser());
+            Collection<Long> collection = new HashSet<Long>();
+            for (Session session : sessions) {
+                collection.add(session.getId());
+            }
+            List<Activity> activities = activityRepository.findBySessionIdInAndActivityTypeIsOrderByAmountDesc(collection, activityType);
+            if (!activities.isEmpty()) {
+                LeaderboardResponse leaderboardResponse = new LeaderboardResponse();
+                leaderboardResponse.setActivity(activities.get(0));
+                leaderboardResponse.setUser(friendResponse.getUser());
+                leaderboardResponseList.add(leaderboardResponse);
+            }
+        }
+        Set<Session> sessions = findAllSessionsForUser(user);
+        Collection<Long> collection = new HashSet<Long>();
+        for (Session session : sessions) {
+            collection.add(session.getId());
+        }
+        List<Activity> activities = activityRepository.findBySessionIdInAndActivityTypeIsOrderByAmountDesc(collection, activityType);
+        if (!activities.isEmpty()) {
+            LeaderboardResponse leaderboardResponse = new LeaderboardResponse();
+            leaderboardResponse.setActivity(activities.get(0));
+            leaderboardResponse.setUser(user);
+            leaderboardResponseList.add(leaderboardResponse);
+        }
+        leaderboardResponseList.sort(LeaderboardResponse::compareTo);
+        return leaderboardResponseList;
+    }
+
 }

@@ -103,4 +103,17 @@ public class ActivityController {
         }
         return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping("/leaderboard/{activityTypeId}")
+    public ResponseEntity getLeaderboardByActivityType(@RequestHeader("Authorization") String authToken,
+                                                       @PathVariable("activityTypeId") long activityId
+    ) {
+        if (authService.isAuthenticated(authToken) == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        User user = authService.isAuthenticated(authToken);
+        ActivityType activityType = this.activityService.findActivityTypeById(activityId).get();
+
+        List<LeaderboardResponse> leaderboardResponseList = this.activityService.getLeaderboard(user, activityType);
+        return new ResponseEntity<>(leaderboardResponseList, HttpStatus.OK);
+
+    }
 }
